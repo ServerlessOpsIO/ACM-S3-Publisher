@@ -14,8 +14,8 @@ custom:
   database_table_name: 'line_items'
   billing_item_bucket_s3_prefix: '${self:custom.database_s3_prefix}/${self:custom.database_table_name}'
 
-  aws_adm_stack_name: 'aws-adm-${self:custom.stage}'
-  aws_adm_sns_topic_export: '${self:custom.aws_adm_stack_name}-BillingRecordsSnsTopicArn'
+  cf-parameters:
+    aws_adm_stack_name: 'aws-adm-${self:custom.stage}'
 
 provider:
   name: aws
@@ -48,6 +48,12 @@ functions:
 
 
 resources:
+  Parameters:
+    AwsAdmStackName:
+      Type: String
+      Description: 'AWS Application Monitoring CloudFormation stack name'
+      Default: '${self:custom.cf-parameters.aws_adm_stack_name}'
+
   Resources:
     S3BillingItemWriterS3Bucket:
       Type: "AWS::S3::Bucket"
@@ -56,7 +62,11 @@ resources:
       Type: 'AWS::SNS::Subscription'
       Properties:
         TopicArn:
-          Fn::ImportValue: '${self:custom.aws_adm_sns_topic_export}'
+          Fn::ImportValue:
+            Fn::Join:
+              - '-'
+              - - Ref: AwsAdmStackName
+                - 'BillingRecordsSnsTopicArn'
         Protocol: lambda
         Endpoint:
           Fn::GetAtt:
@@ -72,7 +82,11 @@ resources:
           Ref: S3BillingItemWriterLambdaFunction
         Principal: 'sns.amazonaws.com'
         SourceArn:
-          Fn::ImportValue: '${self:custom.aws_adm_sns_topic_export}'
+          Fn::ImportValue:
+            Fn::Join:
+              - '-'
+              - - Ref: AwsAdmStackName
+                - 'BillingRecordsSnsTopicArn'
 
     AdmGlueDatabase:
       Type: 'AWS::Glue::Database'
