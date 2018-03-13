@@ -10,6 +10,7 @@ env:
     - AWS_SAM_TMPL_NAME="sam-template.yml"
     - AWS_CFN_TMPL_NAME="cfn-template.yml"
     - AWS_DEFAULT_REGION="us-east-1"
+    - AWS_ADM_STACK_NAME="aws-serverless-repository-ApplicationDollarMonitoring"
     # AWS_ACCESS_KEY_ID
     - secure: NEl5tVwFe2Wvcpk8UY9823qCXX6pqp9dF/C3fcjufRz6Nsq6/pUiYwwnbl7xnXJikS6AHf8k7UEezY3Ch+4jQ/QQRUIuNXaLARqZo8zPxifmzpQtv4HdMpir/dN+QtVBrjYk9E5whQ8F4E+zLVjKF+1LfUy+H7SmQgSazSmvZ9kw6b2MOGqFA+18ZqbbBtl272Y73ESkUNYKQuiMlh9IGcyEqQJhWJ1sSnHY3uUEGalxtD3JDAF4P4eY629tWJEAtHqIDXl8MZZvZVfllkOVBddSmNcbVjoYgUhJWFAH+NlhWlhz2JKm/B+l+Iv7/1hMQLisg85CupLKgoPMlWL6QVXlnsYbrarK8gEzMS/ntQ+7X1LQLiWtbuy5MFQonFbjhKu6yTKpIa9F2BtSyCiGmdq6sYTTItpDLVyLpPnK9N51c+zRE2BOF+4EIg2lczGEtVmiweS2n/qVaBbzr1Gncdp07nCdh2NVAk4F9NT4liapiObzece+9D9fsuqb7I1zRhFzAUZArVDeFzBIjyVOGSNBoOCbkTyJYkad0zQf9+Kk+SiQJ5x7n/SIS6zAJFsfzgWuNhY3DwGXwcqxNorW/PGFVfH9dB2L5S5v3XMPUeLipVmlJxPjseDej2/MFkkb7HY/nda1vm4LGfiWRlCd3+T1bP9eTtwMtmoATSIsICg=
     # AWS_SECRET_ACCESS_KEY
@@ -67,7 +68,7 @@ jobs:
         - cd tmp
         - mkdir $DIST_DIR
         - cp ../${PROJECT_NAME}.zip $DIST_DIR
-        - sls sam export --output ${DIST_DIR}/${AWS_SAM_TMPL_NAME} --codeuri s3://${S3_BUCKET}/${S3_DEPLOY_ARTIFACT}
+        - AWS_ADM_STACK_NAME=${AWS_ADM_STACK_NAME} sls sam export --output ${DIST_DIR}/${AWS_SAM_TMPL_NAME} --codeuri s3://${S3_BUCKET}/${S3_DEPLOY_ARTIFACT}
         - aws cloudformation package --template-file ${DIST_DIR}/${AWS_SAM_TMPL_NAME} --output-template-file ${DIST_DIR}/${AWS_CFN_TMPL_NAME} --s3-bucket ${S3_BUCKET} --s3-prefix ${S3_DEPLOY_PREFIX}
       deploy:
         - provider: s3
