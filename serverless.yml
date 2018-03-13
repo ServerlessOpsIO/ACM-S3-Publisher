@@ -1,4 +1,4 @@
-service: aws-adm-s3-writer
+service: ACM-S3-Publisher
 
 plugins:
   - serverless-python-requirements
@@ -10,7 +10,7 @@ custom:
   stage: "${opt:stage, env:SLS_STAGE, 'dev'}"
   profile: "${opt:aws-profile, env:AWS_PROFILE, env:AWS_DEFAULT_PROFILE, 'default'}"
   log_level: "${env:LOG_LEVEL, 'INFO'}"
-  database_s3_prefix: 'aws-adm'
+  database_s3_prefix: 'ApplicationCostMonitoring'
   database_table_name: 'line_items'
   billing_item_bucket_s3_prefix: '${self:custom.database_s3_prefix}/${self:custom.database_table_name}'
 
@@ -23,7 +23,7 @@ provider:
   stage: ${self:custom.stage}
 
 functions:
-  S3BillingItemWriter:
+  S3Publisher:
     handler: handlers/s3-billing-item-writer.handler
     description: "Write billing data to an S3 bucket"
     runtime: python3.6
@@ -70,7 +70,7 @@ resources:
         Protocol: lambda
         Endpoint:
           Fn::GetAtt:
-            - S3BillingItemWriterLambdaFunction
+            - S3PublisherLambdaFunction
             - Arn
 
     # Needed because we're not setting the SNS event in the function section.
@@ -79,7 +79,7 @@ resources:
       Properties:
         Action: "lambda:InvokeFunction"
         FunctionName:
-          Ref: S3BillingItemWriterLambdaFunction
+          Ref: S3PublisherLambdaFunction
         Principal: 'sns.amazonaws.com'
         SourceArn:
           Fn::ImportValue:
@@ -92,8 +92,8 @@ resources:
       Type: 'AWS::Glue::Database'
       Properties:
         DatabaseInput:
-          Description: 'Application Dollar Monitoring Data'
-          Name: 'application_dollar_monitoring'
+          Description: 'Application cost Monitoring Data'
+          Name: 'application_cost_monitoring'
           LocationUri:
             Fn::Join:
               - '/'
