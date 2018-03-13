@@ -1,6 +1,6 @@
 # AWS Application Cost Monitoring - S3 Writer For Athena
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
-[![Build Status](https://travis-ci.org/ServerlessOpsIO/ApplicationCostMonitoring-S3-Publisher.svg?branch=master)](https://travis-ci.org/ServerlessOpsIO/ACM-S3-Publisher)
+[![Build Status](https://travis-ci.org/ServerlessOpsIO/ACM-S3-Publisher.svg?branch=master)](https://travis-ci.org/ServerlessOpsIO/ACM-S3-Publisher)
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)](https://opensource.org/licenses/BSD-2-Clause)
 
 Application Cost Monitoring provides granular AWS spend tracking. This will write items from [AWS Application Cost Monitoring](https://github.com/ServerlessOpsIO/ApplicationCostMonitoring/) so AWS S3 for analysis with AWS Athena or AWS Quicksight.
