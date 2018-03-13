@@ -15,7 +15,7 @@ custom:
   billing_item_bucket_s3_prefix: '${self:custom.database_s3_prefix}/${self:custom.database_table_name}'
 
   cf-parameters:
-    aws_adm_stack_name: "${env:AWS_ADM_STACK_NAME, 'aws-adm-${self:custom.stage}'}"
+    aws_adm_stack_name: "${env:AWS_ADM_STACK_NAME, 'ApplicationCostMonitoring-${self:custom.stage}'}"
 
 provider:
   name: aws
