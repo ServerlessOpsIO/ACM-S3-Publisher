@@ -1,5 +1,3 @@
-if: (type = pull_request) OR (tag IS present) OR (branch = master)
-
 env:
   global:
     - DIST_DIR="${PWD}/dist"
