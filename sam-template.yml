@@ -38,6 +38,10 @@ Resources:
             Topic:
               Fn::ImportValue:
                 Fn::Sub: ${AwsAdmStackName}-BillingRecordsSnsTopicArn
+      Policies:
+        - S3CrudPolicy:
+            BucketName:
+              Ref: S3BillingItemWriterS3Bucket
   SnsSubscriptionS3BillingItemWriter:
     Type: AWS::SNS::Subscription
     Properties:
