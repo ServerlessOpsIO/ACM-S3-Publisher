@@ -1,0 +1,55 @@
+Description: 'SAM template for ApplicationCostMonitoring ACM-S3-Publisher '
+Parameters:
+  AwsAdmStackName:
+    Default: aws-serverless-repository-ApplicationCostMonitoring
+    Type: String
+    Description: AWS Application Monitoring CloudFormation stack name
+AWSTemplateFormatVersion: '2010-09-09'
+Outputs:
+  S3BillingItemWriterBucketName:
+    Export:
+      Name: ACM-S3-Publisher-prime-S3BillingItemWriterBucketName
+    Description: S3 bucket where billing line items are delivered to.
+    Value:
+      Ref: S3BillingItemWriterS3Bucket
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  S3BillingItemWriterS3Bucket:
+    Type: AWS::S3::Bucket
+  S3Publisher:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Write billing data to an S3 bucket
+      MemorySize: 128
+      Environment:
+        Variables:
+          ARCHIVE_S3_BUCKET_NAME:
+            Ref: S3BillingItemWriterS3Bucket
+          LOG_LEVEL: INFO
+          S3_PREFIX: ApplicationCostMonitoring/line_items
+      Handler: handlers/s3-billing-item-writer.handler
+      Timeout: 15
+      CodeUri: s3://%%S3_BUCKET%%/%%S3_DEPLOY_ARTIFACT%%
+      Runtime: python3.6
+      Events:
+        ApplicationCostMonitoringMessage:
+          Type: SNS
+          Properties:
+            Topic:
+              Fn::ImportValue:
+                Fn::Sub: ${AwsAdmStackName}-BillingRecordsSnsTopicArn
+  SnsSubscriptionS3BillingItemWriter:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint:
+        Fn::GetAtt:
+        - S3Publisher
+        - Arn
+      Protocol: lambda
+      TopicArn:
+        Fn::ImportValue:
+          Fn::Join:
+          - '-'
+          - - Ref: AwsAdmStackName
+            - BillingRecordsSnsTopicArn
+
