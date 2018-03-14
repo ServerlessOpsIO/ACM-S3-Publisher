@@ -26,7 +26,7 @@ $ serverless deploy -v
 ### AWS Serverless Application Repository
 See the README and instructions at:
 
-* 
+* https://serverlessrepo.aws.amazon.com/#/applications/arn:aws:serverlessrepo:us-east-1:641494176294:applications~ACM-S3-Publisher
 
 ## Usage
 Once a report is run and Glue crawler has run, the `line_items` table will be available in the application_cost_monitoring database.  Use [AWS Athena](https://aws.amazon.com/athena/) or [AWS Quicksight](https://aws.amazon.com/quicksight/) to query the data.
