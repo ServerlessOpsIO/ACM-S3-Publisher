@@ -8,7 +8,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Outputs:
   S3BillingItemWriterBucketName:
     Export:
-      Name: ACM-S3-Publisher-prime-S3BillingItemWriterBucketName
+      Name: ACM-S3-Publisher-S3BillingItemWriterBucketName
     Description: S3 bucket where billing line items are delivered to.
     Value:
       Ref: S3BillingItemWriterS3Bucket
