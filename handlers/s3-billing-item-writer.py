@@ -13,6 +13,10 @@ log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 _logger = logging.getLogger(__name__)
 
+if os.environ.get('REMOVE_COST_ALLOCATION_TAGS', '').lower() == 'true':
+    REMOVE_COST_ALLOCATION_TAGS = True
+else:
+    REMOVE_COST_ALLOCATION_TAGS = False
 
 s3_client = boto3.client('s3')
 
@@ -67,7 +71,8 @@ def _write_item_to_s3(s3_bucket, s3_key, line_item):
 def handler(event, context):
     _logger.debug('Event received: {}'.format(json.dumps(event)))
     line_item = _get_line_item_from_event(event)
-    line_item = _remove_resource_tags(line_item)
+    if REMOVE_COST_ALLOCATION_TAGS:
+        line_item = _remove_resource_tags(line_item)
     s3_key = _get_s3_key(line_item)
 
     _logger.info(

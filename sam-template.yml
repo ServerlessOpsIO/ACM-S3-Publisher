@@ -4,6 +4,10 @@ Parameters:
     Default: aws-serverless-repository-ApplicationCostMonitoring
     Type: String
     Description: AWS Application Monitoring CloudFormation stack name
+  RemoveCostAllocationTags:
+    Default: 'false'
+    Type: String
+    Description: 'If cost allocation tags should be removed. Set to "true" to enable. Needed for Athena.'
 AWSTemplateFormatVersion: '2010-09-09'
 Outputs:
   S3BillingItemWriterBucketName:
@@ -27,6 +31,8 @@ Resources:
             Ref: S3BillingItemWriterS3Bucket
           LOG_LEVEL: INFO
           S3_PREFIX: ApplicationCostMonitoring/line_items
+          REMOVE_COST_ALLOCATION_TAGS:
+            Ref: RemoveCostAllocationTags
       Handler: handlers/s3-billing-item-writer.handler
       Timeout: 15
       CodeUri: s3://%%S3_BUCKET%%/%%S3_DEPLOY_ARTIFACT%%
