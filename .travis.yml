@@ -18,9 +18,10 @@ env:
 
 stages:
   - build
-  - artifact
+  - name: artifact
+    if: branch = master AND type != pull_request
   - name: promote
-    if: branch = master
+    if: branch = master AND type != pull_request
 
 jobs:
   include:

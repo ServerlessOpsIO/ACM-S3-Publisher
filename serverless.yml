@@ -16,6 +16,8 @@ custom:
 
   cf-parameters:
     aws_adm_stack_name: "${env:AWS_ADM_STACK_NAME, 'ApplicationCostMonitoring-${self:custom.stage}'}"
+    # set to 'true' if using Athena.
+    remove_cost_allocation_tags: "${env:REMOVE_COST_ALLOCATION_TAGS, 'false'}"
 
 provider:
   name: aws
@@ -38,6 +40,7 @@ functions:
       ARCHIVE_S3_BUCKET_NAME:
         Ref: S3BillingItemWriterS3Bucket
       S3_PREFIX: ${self:custom.billing_item_bucket_s3_prefix}
+      REMOVE_COST_ALLOCATION_TAGS: ${self:custom.cf-parameters.remove_cost_allocation_tags}
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -57,6 +60,12 @@ resources:
       Type: String
       Description: 'AWS Application Monitoring CloudFormation stack name'
       Default: '${self:custom.cf-parameters.aws_adm_stack_name}'
+
+    RemoveCostAllocationTags:
+      Type: String
+      Description: 'If cost allocation tags should be removed. Set to "true" to enable. Needed for Athena.'
+      Default: '${self:custom.cf-parameters.aws_adm_stack_name}'
+
 
   Resources:
     S3BillingItemWriterS3Bucket:
